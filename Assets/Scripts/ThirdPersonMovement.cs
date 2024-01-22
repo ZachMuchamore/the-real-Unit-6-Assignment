@@ -14,7 +14,7 @@ public class ThirdPersonMovement : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     public float gravity = -9.81f;
     public float groundDistance = 0.4f;
-    public float jumpHeight = 3f;
+    public float jumpHeight = 0.5f;
     float turnSmoothVelocity;
 
     public Vector3 velocity;
@@ -57,7 +57,7 @@ public class ThirdPersonMovement : MonoBehaviour
         //Jumping 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            velocity.y = Mathf.Sqrt(jumpHeight * -1f * gravity);
         }
         
         //Gravity 
