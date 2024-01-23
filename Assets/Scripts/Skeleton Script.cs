@@ -5,110 +5,80 @@ using UnityEngine.AI;
 
 public class SkeletonScript : MonoBehaviour
 {
-    public NavMeshAgent agent;
-    public Transform player;
-    public LayerMask whatIsGround, whatIsPlayer;
-    public float health;
+    public NavMeshAgent navMeshAgent;
+    public float startWaitTime = 4;
+    public float timeToRotate = 2;
+    public float speedWalk = 6;
+    public float speedrun = 9;
 
-    //Patrolling
-    public Vector3 walkPoint;
-    bool walkPointSet;
-    public float walkPointRange;
+    public float viewRadius = 15;
+    public float viewAngle = 90;
+    public LayerMask playerMask;
+    public LayerMask obstacleMask;
+    public float meshResolution = 1f;
+    public int edgeIterations = 4;
+    public float edgeDistance = 0.5f;
 
-    //Attacking
-    public float timeBetweenAttacks;
-    bool alreadyAttacked;
-    public GameObject projectile;
+    public Transform[] waypoints;
+    int m_CurrentWaypointIndex;
 
-    //States
-    public float sightRange, attackRange;
-    public bool playerInSightRange, playerInAttackRange;
+    Vector3 playerLastPosition = Vector3.zero;
+    Vector3 m_PlayerPosition;
 
-    private void Awake()
+    float m_WaitTime;
+    float m_TimeToRotate;
+    bool m_PlayerInRange;
+    bool m_PlayerNear;
+    bool m_IsPatrol;
+    bool m_CaughtPlayer;
+
+    void Start()
     {
-        player = GameObject.Find("ThirdPersonPlayer").transform;
-        agent = GetComponent<NavMeshAgent>();
+        m_PlayerPosition = Vector3.zero;
+        m_IsPatrol = true;
+        m_CaughtPlayer = false;
+        m_PlayerInRange = false;
+        m_WaitTime = startWaitTime;
+        m_TimeToRotate = timeToRotate;
+
+        m_CurrentWaypointIndex = 0;
+        navMeshAgent = GetComponent<NavMeshAgent>();
+
+        navMeshAgent.isStopped = false;
+        navMeshAgent.speed = speedWalk;
+        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+
     }
 
     void Update()
     {
-        //check for sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-
-        if (!playerInSightRange && !playerInAttackRange) Patrolling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+        
+    }
+    void Move(float speed)
+    {
+        navMeshAgent.isStopped = false;
+        navMeshAgent.speed = speed;
+    }
+    void CaughtPlayer()
+    {
+        m_CaughtPlayer = true;
     }
 
-    private void Patrolling()
+    void LookingPlayer(Vector3 player)
     {
-        if (!walkPointSet) SearchWalkPoint();
-        if (walkPointSet)
-            agent.SetDestination(walkPoint);
-
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-
-        //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 1f)
-            walkPointSet = false;
-    }
-    private void SearchWalkPoint()
-    {
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
-            walkPointSet = true;
-
-
-    }
-    private void ChasePlayer()
-    {
-        agent.SetDestination(player.position);
-
-    }
-    private void AttackPlayer()
-    {
-        agent.SetDestination(transform.position);
-
-        transform.LookAt(player);
-
-        if (!alreadyAttacked)
+        navMeshAgent.SetDestination(player);
+        if(Vector3.Distance(transform.position, player) <= 0.3)
         {
-            //Attack code here
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+            if(m_WaitTime <= 0)
+            {
+                m_PlayerNear = false;
+                Move(speedWalk);
+                navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+                m_WaitTime = startWaitTime;
+                m_TimeToRotate = timeToRotate;
 
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-
-
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            }
         }
-    }
-    private void ResetAttack()
-    {
-        alreadyAttacked = false;
-    }
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
-    }
-    private void DestroyEnemy()
-    {
-        Destroy(gameObject);
-    }
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }
 

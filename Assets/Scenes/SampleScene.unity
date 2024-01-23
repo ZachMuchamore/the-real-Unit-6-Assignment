@@ -137,23 +137,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dff0352469252694e93594b4da8a8e2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 25084082}
-  player: {fileID: 1158619906}
-  whatIsGround:
+  navMeshAgent: {fileID: 0}
+  startWaitTime: 4
+  timeToRotate: 2
+  speedWalk: 6
+  speedrun: 9
+  viewRadius: 15
+  viewAngle: 90
+  playerMask:
     serializedVersion: 2
-    m_Bits: 128
-  whatIsPlayer:
+    m_Bits: 0
+  obstacleMask:
     serializedVersion: 2
-    m_Bits: 256
-  health: 100
-  walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 5
-  timeBetweenAttacks: 1
-  projectile: {fileID: 25084080}
-  sightRange: 20
-  attackRange: 12
-  playerInSightRange: 0
-  playerInAttackRange: 0
+    m_Bits: 0
+  meshResolution: 1
+  edgeIterations: 4
+  edgeDistance: 0.5
+  waypoints: []
 --- !u!195 &25084082
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 25084080}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.23739386
+  m_Radius: 0.25
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -172,10 +172,37 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 3.487678
+  m_Height: 2.04
   m_BaseOffset: 1.743839
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
+--- !u!54 &25084086
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25084080}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &439737216
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1166,7 +1193,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346816634}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.37624863, y: 0.000000015942033, z: -0.000000006473877, w: 0.92651874}
+  m_LocalRotation: {x: 0.37624863, y: -0.000000015942033, z: 0.000000006473877, w: 0.92651874}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1597,16 +1624,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.8580616
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
+      value: 0.227
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 40.854454
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1654,6 +1685,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 25084081}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 25084086}
   m_SourcePrefab: {fileID: 100100000, guid: f57a47a8826d1614e9d4c5cdb547cd88, type: 3}
 --- !u!1 &2077444404
 GameObject:
