@@ -52,12 +52,100 @@ public class SkeletonScript : MonoBehaviour
 
     void Update()
     {
+        EnvironmentView();
+
+        if (!m_IsPatrol)
+        {
+            Chasing();
+        }
+        else
+        {
+            Patroling();
+        }
+    }
+    void Chasing()
+    {
+        m_PlayerNear = false;
+        playerLastPosition = Vector3.zero;
+
+        if (!m_CaughtPlayer)
+        {
+            Move(speedrun);
+            navMeshAgent.SetDestination(m_PlayerPosition);
+        }
+        if(navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        {
+            if (m_WaitTime <= 0 && !m_CaughtPlayer && Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("player").transform.position) >= 6f)
+            {
+                m_IsPatrol = true;
+                m_PlayerNear = false;
+                Move(speedWalk);
+                m_TimeToRotate = timeToRotate;
+                m_WaitTime = startWaitTime;
+                navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+            }
+            else
+            {
+                if (Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position)>= 2.5f)
+                {
+                    Stop();
+                    m_WaitTime -= Time.deltaTime;
+                }
+            }
+
+        }
+    }
+    void Patroling()
+    {
+        if (m_PlayerNear) 
+        {
+            if (m_TimeToRotate <= 0)
+            {
+                Move(speedWalk);
+                LookingPlayer(playerLastPosition);
+            }
+            else
+            {
+                Stop();
+                m_TimeToRotate -= Time.deltaTime;
+            }
+        }
+        else
+        {
+            m_PlayerNear = false;
+            playerLastPosition = Vector3.zero;
+            navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+            if(navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            {
+                if(m_WaitTime <= 0)
+                {
+                    NextPoint();
+                    Move(speedWalk);
+                    m_WaitTime = startWaitTime;
+                }
+                else
+                {
+                    Stop();
+                    m_WaitTime -= Time.deltaTime;
+                }
+            }
+        }
         
     }
     void Move(float speed)
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speed;
+    }
+    void Stop()
+    {
+        navMeshAgent.isStopped = true;
+        navMeshAgent.speed = 0;
+    }
+    public void NextPoint()
+    {
+        m_CurrentWaypointIndex = (m_CurrentWaypointIndex + 1) %waypoints.Length;
+        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
     }
     void CaughtPlayer()
     {
@@ -69,7 +157,7 @@ public class SkeletonScript : MonoBehaviour
         navMeshAgent.SetDestination(player);
         if(Vector3.Distance(transform.position, player) <= 0.3)
         {
-            if(m_WaitTime <= 0)
+            if (m_WaitTime <= 0)
             {
                 m_PlayerNear = false;
                 Move(speedWalk);
@@ -78,7 +166,45 @@ public class SkeletonScript : MonoBehaviour
                 m_TimeToRotate = timeToRotate;
 
             }
+            else
+            {
+                Stop();
+                m_WaitTime -= Time.deltaTime;
+            }
         }
+    }
+    void EnvironmentView()
+    {
+        Collider[] playerInRange = Physics.OverlapSphere(transform.position, viewRadius, playerMask);
+
+        for(int i = 0; i < playerInRange.Length; i++)
+        {
+            Transform player = playerInRange[i].transform;
+            Vector3 dirToplayer = (player.position - transform.position).normalized;
+            if(Vector3.Angle(transform.forward, dirToplayer)< viewAngle / 2)
+            {
+                float dstToPlayer = Vector3.Distance(transform.position, player.position);
+                if(!Physics.Raycast(transform.position, dirToplayer, dstToPlayer, obstacleMask))
+                {
+                    m_PlayerInRange = true;
+                    m_IsPatrol = false;
+                }
+                else
+                {
+                    m_PlayerInRange = false;
+                }
+            }
+            if(Vector3.Distance(transform.forward, player.position)> viewRadius)
+            {
+                m_PlayerInRange = false;
+            }
+            if (m_PlayerInRange)
+            {
+                m_PlayerPosition = player.transform.position;
+            }
+        }
+        
+        
     }
 }
 
