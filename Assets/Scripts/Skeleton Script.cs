@@ -17,7 +17,7 @@ public class SkeletonScript : MonoBehaviour
 
     //Attacking
     public float timeBetweenAttacks = 5f;
-    bool alreadyAttacked;
+    //bool alreadyAttacked;
     public GameObject projectile;
 
     //States
@@ -38,7 +38,7 @@ public class SkeletonScript : MonoBehaviour
 
         if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+        //if (playerInSightRange && playerInAttackRange) AttackPlayer();
     }
 
     private void Patroling()
