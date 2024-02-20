@@ -16,7 +16,7 @@ public class SkeletonScript : MonoBehaviour
     public float walkPointRange;
 
     //Attacking
-    public float timeBetweenAttacks;
+    public float timeBetweenAttacks = 5f;
     bool alreadyAttacked;
     public GameObject projectile;
 
@@ -50,7 +50,7 @@ public class SkeletonScript : MonoBehaviour
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
-        //walkp[oint reached
+        //walkpoint reached
         if (distanceToWalkPoint.magnitude < 1f)
             walkPointSet = false;
     }
@@ -71,7 +71,7 @@ public class SkeletonScript : MonoBehaviour
         agent.SetDestination(player.position);
     }
 
-    private void AttackPlayer()
+    /*private void AttackPlayer()
     {
         agent.SetDestination(transform.position);
 
@@ -99,5 +99,5 @@ public class SkeletonScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
-    }
+    }*/
 }

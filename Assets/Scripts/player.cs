@@ -45,6 +45,18 @@ public class Player : MonoBehaviour
             isJumping=true;
             tpm.isGrounded=false;
         }
+        if (Input.GetKey("a"))
+        {
+            anim.SetBool("walk", true);
+        }
+        if (Input.GetKey("d"))
+        {
+            anim.SetBool("walk", true);
+        }
+        if (Input.GetKey("s"))
+        {
+            anim.SetBool("walk", true);
+        }
 
         DoJump();
 
