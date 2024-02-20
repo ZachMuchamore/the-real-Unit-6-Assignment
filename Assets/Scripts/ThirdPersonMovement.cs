@@ -53,6 +53,8 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             velocity.y = -2f;
         }
+        print("ground hit=" + isGrounded);
+
 
         //Jumping 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)

@@ -23,29 +23,28 @@ public class Player : MonoBehaviour
     void Update()
     {
 
+        anim.SetBool("walk", false);
+        anim.SetBool("sprint", false);
 
-        if (Input.GetKey("w"))
+        if ((Input.GetKey("w") == true) || (Input.GetKey("a") == true))
         {
-            anim.SetBool("walk", true);
+            // check for shift
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                anim.SetBool("sprint", true);
+            }
+            else
+            {
+                anim.SetBool("walk", true);
+            }
         }
-        else
-        {
-            anim.SetBool("walk", false);
-        }
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            anim.SetBool("sprint", true);
-        }
-        else
-        {
-            anim.SetBool("sprint", false);
-        }
+
         if (Input.GetKeyDown(KeyCode.Space) && tpm.isGrounded)
         {
             isJumping=true;
-            tpm.isGrounded=false;
+            //tpm.isGrounded=false;
         }
-        if (Input.GetKey("a"))
+       /* if (Input.GetKey("a"))
         {
             anim.SetBool("walk", true);
         }
@@ -56,7 +55,7 @@ public class Player : MonoBehaviour
         if (Input.GetKey("s"))
         {
             anim.SetBool("walk", true);
-        }
+        }*/
 
         DoJump();
 
@@ -64,7 +63,7 @@ public class Player : MonoBehaviour
 
     void DoJump()
     {
-        print("vel=" + tpm.velocity.y);
+       // print("vel=" + tpm.velocity.y + "  is grounded=" + tpm.isGrounded);
 
         if (isJumping && tpm.velocity.y <= 0)
         {
