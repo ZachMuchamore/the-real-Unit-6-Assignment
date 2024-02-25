@@ -1201,7 +1201,7 @@ MonoBehaviour:
   speed: 6
   turnSmoothTime: 0.1
   gravity: -19.62
-  groundDistance: 0.4
+  groundDistance: 1.1
   jumpHeight: 3
   velocity: {x: 0, y: 0, z: 0}
   groundMask:

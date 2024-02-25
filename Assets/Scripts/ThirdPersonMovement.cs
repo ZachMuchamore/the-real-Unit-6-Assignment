@@ -20,11 +20,12 @@ public class ThirdPersonMovement : MonoBehaviour
     public Vector3 velocity;
     public LayerMask groundMask;
     public bool isGrounded;
+    Animator anim;
 
 
     private void Start()
     {
-
+        anim = GetComponent<Animator>();
     }
     
 
@@ -60,6 +61,7 @@ public class ThirdPersonMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -1f * gravity);
+            
         }
         
         //Gravity 
